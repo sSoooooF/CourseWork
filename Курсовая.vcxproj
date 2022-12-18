@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="AdressList.txt" />
+    <Text Include="PatientList1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
