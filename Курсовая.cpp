@@ -140,14 +140,15 @@ public:
 };
 
 void SearchByLastName(PatientNode* root, string search_by, string data_to_search, string filename) {
-	ofstream fout(filename, std::ios::ate);
 	if (!root) return;
 	SearchByLastName(root->left, search_by, data_to_search, filename);
 	if (root->last_name == data_to_search) {
-		fout << "\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+		ofstream fout(filename, std::ios::ate);
+		cout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
 			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
 			<< root->date_of_birth.year << "\t+" << root->phone_number
-			<< "\t" << root->policy_number << "\t" << root->blood_type << endl;
+			<< "\t" << root->policy_number << "\t" << root->blood_type;
+		fout.close();
 	}
 	SearchByLastName(root->right, search_by, data_to_search, filename);
 }
@@ -155,40 +156,41 @@ void SearchByLastName(PatientNode* root, string search_by, string data_to_search
 void SearchByFirstName(PatientNode* root, string search_by, string data_to_search, string filename) {
 	if (!root) return;
 	SearchByFirstName(root->left, search_by, data_to_search, filename);
-	SearchByFirstName(root->right, search_by, data_to_search, filename);
-	ofstream fout;
-	fout.open(filename, std::ios::ate);
 	if (root->first_name == data_to_search) {
-		fout << "\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+		ofstream fout(filename, std::ios::ate);
+		cout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
 			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
 			<< root->date_of_birth.year << "\t+" << root->phone_number
-			<< "\t" << root->policy_number << "\t" << root->blood_type << endl;
+			<< "\t" << root->policy_number << "\t" << root->blood_type;
+		fout.close();
 	}
-	fout.close();
+	SearchByFirstName(root->right, search_by, data_to_search, filename);
 }
 
 void SearchByBloodType(PatientNode* root, string search_by, string data_to_search, string filename) {
-	ofstream fout(filename, std::ios::ate);
 	if (!root) return;
 	SearchByBloodType(root->left, search_by, data_to_search, filename);
 	if (root->blood_type == data_to_search) {
-		fout << "\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+		ofstream fout(filename, std::ios::ate);
+		cout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
 			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
 			<< root->date_of_birth.year << "\t+" << root->phone_number
-			<< "\t" << root->policy_number << "\t" << root->blood_type << endl;
+			<< "\t" << root->policy_number << "\t" << root->blood_type;
+		fout.close();
 	}
 	SearchByBloodType(root->right, search_by, data_to_search, filename);
 }
 
 void SearchByPolicyNumber(PatientNode* root, string search_by, string data_to_search, string filename) {
-	ofstream fout(filename, std::ios::ate);
 	if (!root) return;
 	SearchByPolicyNumber(root->left, search_by, data_to_search, filename);
 	if (root->policy_number == data_to_search) {
-		fout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+		ofstream fout(filename, std::ios::ate);
+		cout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
 			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
 			<< root->date_of_birth.year << "\t+" << root->phone_number
 			<< "\t" << root->policy_number << "\t" << root->blood_type;
+		fout.close();
 	}
 	SearchByPolicyNumber(root->right, search_by, data_to_search, filename);
 }
@@ -511,6 +513,8 @@ void menuReaization() {
 							break;
 						case 3:
 							InterfaceSearchInTree(patient_tree->root);
+							cout << endl;
+							system("pause");
 							break;
 						case 4:
 							cout << "Enter patient index to delete\n> ";
