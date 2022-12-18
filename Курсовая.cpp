@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <stdio.h>
 #include <sstream>
-
+#include <map>
 
 #define string std::string
 #define cout std::cout
@@ -12,8 +12,6 @@
 #define ifstream std::ifstream
 #define ofstream std::ofstream
 #define endl std::endl
-#define setprecision std::setprecision
-
 
 struct DateOfBirth {
 	int day;
@@ -140,6 +138,102 @@ public:
 		return root;
 	}
 };
+
+void SearchByLastName(PatientNode* root, string search_by, string data_to_search, string filename) {
+	ofstream fout(filename, std::ios::ate);
+	if (!root) return;
+	SearchByLastName(root->left, search_by, data_to_search, filename);
+	if (root->last_name == data_to_search) {
+		fout << "\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
+			<< root->date_of_birth.year << "\t+" << root->phone_number
+			<< "\t" << root->policy_number << "\t" << root->blood_type << endl;
+	}
+	SearchByLastName(root->right, search_by, data_to_search, filename);
+}
+
+void SearchByFirstName(PatientNode* root, string search_by, string data_to_search, string filename) {
+	if (!root) return;
+	SearchByFirstName(root->left, search_by, data_to_search, filename);
+	SearchByFirstName(root->right, search_by, data_to_search, filename);
+	ofstream fout;
+	fout.open(filename, std::ios::ate);
+	if (root->first_name == data_to_search) {
+		fout << "\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
+			<< root->date_of_birth.year << "\t+" << root->phone_number
+			<< "\t" << root->policy_number << "\t" << root->blood_type << endl;
+	}
+	fout.close();
+}
+
+void SearchByBloodType(PatientNode* root, string search_by, string data_to_search, string filename) {
+	ofstream fout(filename, std::ios::ate);
+	if (!root) return;
+	SearchByBloodType(root->left, search_by, data_to_search, filename);
+	if (root->blood_type == data_to_search) {
+		fout << "\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
+			<< root->date_of_birth.year << "\t+" << root->phone_number
+			<< "\t" << root->policy_number << "\t" << root->blood_type << endl;
+	}
+	SearchByBloodType(root->right, search_by, data_to_search, filename);
+}
+
+void SearchByPolicyNumber(PatientNode* root, string search_by, string data_to_search, string filename) {
+	ofstream fout(filename, std::ios::ate);
+	if (!root) return;
+	SearchByPolicyNumber(root->left, search_by, data_to_search, filename);
+	if (root->policy_number == data_to_search) {
+		fout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
+			<< root->date_of_birth.year << "\t+" << root->phone_number
+			<< "\t" << root->policy_number << "\t" << root->blood_type;
+	}
+	SearchByPolicyNumber(root->right, search_by, data_to_search, filename);
+}
+
+void SearchInTree(PatientNode* root,string search_by, string data_to_search, string filename) {
+	if (search_by == "last name") {
+		SearchByLastName(root, search_by, data_to_search, filename);
+	}
+	else if (search_by == "first name") {
+		SearchByFirstName(root, search_by, data_to_search, filename);
+	}
+	else if (search_by == "blood type") {
+		SearchByBloodType(root, search_by, data_to_search, filename);
+	}
+	else if (search_by == "policy number") {
+		SearchByPolicyNumber(root, search_by, data_to_search, filename);
+	}
+	else {
+		cout << "\n\tIncorrect input!\n";
+		system("pause");
+		return;
+	}
+}
+
+void InterfaceSearchInTree(PatientNode* root) {
+	cout << "\nSearch by ___(first name, last name, policy number, blood type):> ";
+	cin.ignore(1, '\n');
+	string search_by, data_to_search;
+	getline(cin, search_by);
+	cout << "\nWrite " << search_by << " to search:\n> ";
+	cin >> data_to_search;
+	cout << "\nWrite the name of the file in which to write the data:\n> ";
+	string filename;
+	ofstream fout;
+	cin >> filename;
+	fout.open(filename, std::ios::ate);
+	while (!fout.is_open()) {
+		cout << "\nError: file does not exist! Try another time:\n> ";
+		cin >> filename;
+		fout.close();
+		fout.open(filename);
+	}
+	fout << "Patients with " << search_by << " " << data_to_search << ":\n";
+	SearchInTree(root, search_by, data_to_search, filename);
+}
 
 PatientNode* inorderNumber(struct PatientNode* root, int& number) {
 	PatientNode* new_root = root;
@@ -271,6 +365,8 @@ void menuReaization() {
 	string blood_type;
 	ifstream fin;
 	string filename;
+	string search_by;
+	string data_to_search;
 	int index;
 	PatientTree* patient_tree = new PatientTree;
 	Adress* current = new Adress;
@@ -355,7 +451,7 @@ void menuReaization() {
 						cin >> variant2;
 						switch (variant2) {
 						case 1:
-							cout << "Enter patient date: first name, last name, patronymic, day, month, year of birth, phone number, policy number, blood type\n> ";
+							cout << "Enter patient date: first name, last name, patronymic, date of birth, phone number, policy number, blood type\n> ";
 							cin >> first_name >> last_name >> patronymic >> date_of_birth.day >> date_of_birth.month >> date_of_birth.year >> phone_number >> policy_number >> blood_type;
 							patient_tree->insert(first_name, last_name, patronymic, date_of_birth, phone_number, policy_number, blood_type);
 							break;
@@ -390,7 +486,7 @@ void menuReaization() {
 						patient_tree->root = inorderNumber(patient_tree->root, number);
 						cout << "Index\tLast name\tFirst name\tPatronymic\tDate of birth\tPhone number\tPolicy number\t\tBlood type\n";
 						patient_tree->inorderPrint(patient_tree->root);
-						cout << "\nOptions:\n1. Add new patient manually\n2. Add new patients from file\n3. Delete patient by index\n4. Delete all patients\n5. Return to adress list\nYour choise:\n> ";
+						cout << "\nOptions:\n1. Add new patient manually\n2. Add new patients from file\n3. Search patients and write them to file\n4. Delete patient by index\n5. Delete all patients\n6. Return to adress list\nYour choise:\n> ";
 						cin >> variant2;
 						switch (variant2) {
 						case 1:
@@ -414,15 +510,18 @@ void menuReaization() {
 							fin.close();
 							break;
 						case 3:
+							InterfaceSearchInTree(patient_tree->root);
+							break;
+						case 4:
 							cout << "Enter patient index to delete\n> ";
 							cin >> index;	
 							patient_tree->root = patient_tree->DeletePatientNode(patient_tree->root, index);
 							break;
-						case 4:
+						case 5:
 							patient_tree->deletePatientList(patient_tree->root);
 							patient_tree->root = NULL;
 							break;
-						case 5:
+						case 6:
 							current->PatientTree = patient_tree;
 							break;
 						default:
@@ -431,7 +530,7 @@ void menuReaization() {
 							break;
 						}
 					}
-				} while (variant2 != 3 && !patient_tree->root || patient_tree->root && variant2 != 5);
+				} while (variant2 != 3 && !patient_tree->root || patient_tree->root && variant2 != 6);
 				break;
 			case 4:
 				cout << "\nEnter the index of the address to delete\n> ";
@@ -454,5 +553,6 @@ void menuReaization() {
 
 
 int main() {
+	
 	menuReaization();
 }
