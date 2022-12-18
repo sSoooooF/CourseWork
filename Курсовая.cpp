@@ -21,29 +21,54 @@ struct DateOfBirth {
 	int year;
 };
 
-class PatientTree {
-public: 
-	struct PatientNode {
-		string first_name;
-		string last_name;
-		string patronymic;
-		struct DateOfBirth date_of_birth;
-		string phone_number;
-		string policy_number;
-		string blood_type;
-		int number;
-		struct PatientNode* left;
-		struct PatientNode* right;
-	};
+struct PatientNode {
+	string first_name;
+	string last_name;
+	string patronymic;
+	struct DateOfBirth date_of_birth;
+	string phone_number;
+	string policy_number;
+	string blood_type;
+	int number;
+	struct PatientNode* left;
+	struct PatientNode* right;
+};
 
+class PatientTree {
 public:
 	struct PatientNode* root;
+	void deletePatientList(PatientNode* root) {
+		if (root->left) deletePatientList(root->left);
+		if (root->right) deletePatientList(root->right);
+		delete root;
+	}
 
-	void DeletePatientList(PatientNode* root);
-	void DeletePatientNode(PatientNode* root, int index);
+	PatientNode* DeletePatientNode(PatientNode* root, int key) {
+		if (root == NULL) return root;
+		if (root->number < key) {
+			root->right = DeletePatientNode(root->right, key);
+		}
+		else if (root->number > key) {
+			root->left = DeletePatientNode(root->left, key);
+		}
+		else if (root->left != NULL && NULL != root->right) {
+			root->number = FindMinNode(root->right)->number;
+			root->right = DeletePatientNode(root->right, root->number);
+		}
+		else {
+			if (root->left != NULL)
+				root = root->left;
+			else if (root->right != NULL)
+				root =  root->right;
+			else root =  NULL;
+		}
+		return root;
+	}
+
 	PatientTree() {
 		root = NULL;
 	}
+
 	void insert(string first_name, string last_name, string patronymic, struct DateOfBirth date_of_birth, string phone_number, string policy_number, string blood_type) {
 		root = doInsert(first_name, last_name, patronymic, date_of_birth, phone_number, policy_number, blood_type, root);
 	}
@@ -95,8 +120,18 @@ private:
 		return tree;
 	}
 public:
-	void inorderPrint(struct PatientNode* root);
-	void inorderNumber(struct PatientNode* root, int number);
+	void inorderPrint(struct PatientNode* root) {
+		if (!root) {
+			return;
+		}
+		inorderPrint(root->left);
+		cout << root->number << "\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
+			<< root->date_of_birth.year << "\t+" << root->phone_number
+			<< "\t" << root->policy_number << "\t" << root->blood_type << endl;
+		inorderPrint(root->right);
+	}
+
 	PatientNode* FindMinNode(PatientNode* root) {
 		PatientNode* minNode = new PatientNode;
 		while (root->left) {
@@ -106,55 +141,14 @@ public:
 	}
 };
 
-
-void PatientTree::inorderNumber(struct PatientNode* root, int number) {
-	if (!root) {
-		return;
+PatientNode* inorderNumber(struct PatientNode* root, int& number) {
+	PatientNode* new_root = root;
+	if (new_root) {
+		inorderNumber(new_root->left, number);
+		new_root->number = number++;
+		inorderNumber(new_root->right, number);
 	}
-	inorderNumber(root->left, number);
-	root->number = number++;
-	inorderNumber(root->right, number);
-}
-
-void PatientTree::DeletePatientNode(struct PatientNode* root, int key) {
-	if (root == NULL) return;
-	if (root->number < key) {
-		DeletePatientNode(root->right, key);
-	}
-	else if (root->number > key) {
-		DeletePatientNode(root->left, key);
-	}
-	else if (root->left != NULL && NULL != root->right) {
-		root->number = FindMinNode(root->right)->number;
-		DeletePatientNode(root->right, root->number);
-	}
-	else {
-		if (root->left != NULL)
-			root = root->left;
-		else if (root->right != NULL)
-			root = root->right;
-		else root = NULL;
-	}
-}
-
-void PatientTree::DeletePatientList(struct PatientNode* root) {
-	if (root != NULL) {
-		DeletePatientList(root->right);
-		DeletePatientList(root->left);
-		root = NULL;
-	}
-}
-
-void PatientTree::inorderPrint(struct PatientNode* root) {
-	if (!root) {
-		return;
-	}
-	inorderPrint(root->left);
-	cout << root->number << "\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
-		<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
-		<< root->date_of_birth.year << "\t+" << root->phone_number
-		<< "\t" << root->policy_number << "\t" << root->blood_type << endl;
-	inorderPrint(root->right);
+	return new_root;
 }
 
 // List of adresses
@@ -193,8 +187,8 @@ int AdressList::KnowLength() {
 void AdressList::AddAdress(string adress) {
 	Adress* a = new Adress;
 	a->PatientTree = new PatientTree;
-	a->adress = adress;
 	a->PatientTree->root = NULL;
+	a->adress = adress;
 	if (firstAdress_==NULL) {
 		firstAdress_ = lastAdress_ = a;
 		lastAdress_->next_adress = firstAdress_;
@@ -267,7 +261,6 @@ void menuReaization() {
 	AdressList* adress_list = new AdressList;
 	int variant;
 	int variant2;
-	int number;
 	string adress;
 	string first_name;
 	string last_name;
@@ -393,7 +386,8 @@ void menuReaization() {
 						system("cls");
 						cout << "\tCurrent adress: " << current->adress << endl;
 						cout << "\tPatient list is created!\n";
-						patient_tree->inorderNumber(patient_tree->root, 1);
+						int number = 1;
+						patient_tree->root = inorderNumber(patient_tree->root, number);
 						cout << "Index\tLast name\tFirst name\tPatronymic\tDate of birth\tPhone number\tPolicy number\t\tBlood type\n";
 						patient_tree->inorderPrint(patient_tree->root);
 						cout << "\nOptions:\n1. Add new patient manually\n2. Add new patients from file\n3. Delete patient by index\n4. Delete all patients\n5. Return to adress list\nYour choise:\n> ";
@@ -422,10 +416,11 @@ void menuReaization() {
 						case 3:
 							cout << "Enter patient index to delete\n> ";
 							cin >> index;	
-							patient_tree->DeletePatientNode(patient_tree->root, index);
+							patient_tree->root = patient_tree->DeletePatientNode(patient_tree->root, index);
 							break;
 						case 4:
-							patient_tree->DeletePatientList(patient_tree->root);
+							patient_tree->deletePatientList(patient_tree->root);
+							patient_tree->root = NULL;
 							break;
 						case 5:
 							current->PatientTree = patient_tree;
