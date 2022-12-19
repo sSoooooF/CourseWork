@@ -12,6 +12,9 @@
 #define ifstream std::ifstream
 #define ofstream std::ofstream
 #define endl std::endl
+#define setfill std::setfill
+#define setw std::setw
+#define setprecision std::setprecision
 
 struct DateOfBirth {
 	int day;
@@ -118,17 +121,7 @@ private:
 		return tree;
 	}
 public:
-	void inorderPrint(struct PatientNode* root) {
-		if (!root) {
-			return;
-		}
-		inorderPrint(root->left);
-		cout << root->number << "\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
-			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
-			<< root->date_of_birth.year << "\t+" << root->phone_number
-			<< "\t" << root->policy_number << "\t" << root->blood_type << endl;
-		inorderPrint(root->right);
-	}
+	void inorderPrint(struct PatientNode* root);
 
 	PatientNode* FindMinNode(PatientNode* root) {
 		PatientNode* minNode = new PatientNode;
@@ -139,12 +132,26 @@ public:
 	}
 };
 
+
+
+void PatientTree::inorderPrint(struct PatientNode* root) {
+	if (!root) {
+		return;
+	}
+	inorderPrint(root->left);
+	cout << root->number << "\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+		<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
+		<< root->date_of_birth.year << "\t+" << root->phone_number
+		<< "\t" << root->policy_number << "\t" << root->blood_type << endl;
+	inorderPrint(root->right);
+}
+
 void SearchByLastName(PatientNode* root, string search_by, string data_to_search, string filename) {
 	if (!root) return;
 	SearchByLastName(root->left, search_by, data_to_search, filename);
 	if (root->last_name == data_to_search) {
-		ofstream fout(filename, std::ios::ate);
-		cout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+		ofstream fout(filename, std::ios::app);
+		fout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
 			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
 			<< root->date_of_birth.year << "\t+" << root->phone_number
 			<< "\t" << root->policy_number << "\t" << root->blood_type;
@@ -157,8 +164,8 @@ void SearchByFirstName(PatientNode* root, string search_by, string data_to_searc
 	if (!root) return;
 	SearchByFirstName(root->left, search_by, data_to_search, filename);
 	if (root->first_name == data_to_search) {
-		ofstream fout(filename, std::ios::ate);
-		cout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+		ofstream fout(filename, std::ios::app);
+		fout << "\n" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
 			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
 			<< root->date_of_birth.year << "\t+" << root->phone_number
 			<< "\t" << root->policy_number << "\t" << root->blood_type;
@@ -171,8 +178,8 @@ void SearchByBloodType(PatientNode* root, string search_by, string data_to_searc
 	if (!root) return;
 	SearchByBloodType(root->left, search_by, data_to_search, filename);
 	if (root->blood_type == data_to_search) {
-		ofstream fout(filename, std::ios::ate);
-		cout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+		ofstream fout(filename, std::ios::app);
+		fout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
 			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
 			<< root->date_of_birth.year << "\t+" << root->phone_number
 			<< "\t" << root->policy_number << "\t" << root->blood_type;
@@ -185,8 +192,8 @@ void SearchByPolicyNumber(PatientNode* root, string search_by, string data_to_se
 	if (!root) return;
 	SearchByPolicyNumber(root->left, search_by, data_to_search, filename);
 	if (root->policy_number == data_to_search) {
-		ofstream fout(filename, std::ios::ate);
-		cout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
+		ofstream fout(filename, std::ios::app);
+		fout << "\n\t" << root->last_name << "\t\t" << root->first_name << "\t\t" << root->patronymic << "\t"
 			<< root->date_of_birth.day << "." << root->date_of_birth.month << "."
 			<< root->date_of_birth.year << "\t+" << root->phone_number
 			<< "\t" << root->policy_number << "\t" << root->blood_type;
@@ -234,6 +241,7 @@ void InterfaceSearchInTree(PatientNode* root) {
 		fout.open(filename);
 	}
 	fout << "Patients with " << search_by << " " << data_to_search << ":\n";
+	fout.close();
 	SearchInTree(root, search_by, data_to_search, filename);
 }
 
@@ -266,10 +274,10 @@ public:
 	void DelAdress(int index);
 	void DelAllAdresses();
 	void PrintAdressList();
-	int KnowLength();
+	int knowLength();
 };
 
-int AdressList::KnowLength() {
+int AdressList::knowLength() {
 	int counter = 0;
 	Adress* a = new Adress;
 	a = firstAdress_;
@@ -298,7 +306,7 @@ void AdressList::AddAdress(string adress) {
 void AdressList::DelAdress(int index) {
 	Adress* now = new Adress;
 	now = firstAdress_;
-	int length = KnowLength();
+	int length = knowLength();
 	if (index > length || index < 1) return;
 
 	if (firstAdress_ == NULL) return;	// hollow list
@@ -349,7 +357,6 @@ void AdressList::PrintAdressList() {
 		cout <<++counter<< "\t" << a->adress << endl;
 		a = a->next_adress;
 	} while (a != firstAdress_);
-
 }
 
 void menuReaization() {
@@ -557,6 +564,6 @@ void menuReaization() {
 
 
 int main() {
-	
+	system("color F0");
 	menuReaization();
 }

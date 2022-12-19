@@ -1,2 +1,4 @@
-Patients with first name Ivan:
-2011	+79172695051	4567147825883699	a+
+Patients with last name Ivanov:
+
+	Ivanov		Ivan		Ivanovich	11.11.2011	+79172695051	4567147825883699	ab+
+	Ivanov		Ivanko		Ivanovich	11.11.2011	+79172695051	4567147825883699	b+
