@@ -23,7 +23,7 @@
     <Text Include="AdressList.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
-    <Text Include="PatientList1.txt">
+    <Text Include="PatientList.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
     <Text Include="Results.txt">

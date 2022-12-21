@@ -1,4 +1,29 @@
-Patients with last name Ivanov:
 
+
+		Adress: Druzhby Narodiv street 67
+Patient to search: Vanov Ivan Ivanovich
+
+		Adress: Dubosekivska street 13
+	Vanov		Ivan		Ivanovich	11.11.2011	+79172695051	4567147825883699	a+
+
+		Adress: 20A Kol Gali boulevard
+
+		Adress: avenue Yashlek house 18
+
+		Adress: Prospekt Mira house 29
+
+		Adress: Druzhby Narodiv street 67
+
+
+Patient to search: Ivanov Ivan Ivanovich
+
+		Adress: Dubosekivska street 13
 	Ivanov		Ivan		Ivanovich	11.11.2011	+79172695051	4567147825883699	ab+
-	Ivanov		Ivanko		Ivanovich	11.11.2011	+79172695051	4567147825883699	b+
+
+		Adress: 20A Kol Gali boulevard
+
+		Adress: avenue Yashlek house 18
+
+		Adress: Prospekt Mira house 29
+
+		Adress: Druzhby Narodiv street 67
