@@ -1,10 +1,7 @@
-﻿#include <iostream>
-#include <string>
-#include <fstream>
-#include <iomanip>
-#include <stdio.h>
-#include <sstream>
-#include <map>
+﻿#include <iostream>		// стандартный ввод-вывод
+#include <string>		// работа со string
+#include <fstream>		// файловый ввод-вывод	
+#include <sstream>		// потоковая работа со string
 
 #define string std::string
 #define cout std::cout
@@ -16,12 +13,16 @@
 #define setw std::setw
 #define setprecision std::setprecision
 
+
+// дата рождения пациента
 struct DateOfBirth {
 	int day;
 	int month;
 	int year;
 };
 
+
+// структура данных пациента
 struct PatientNode {
 	string first_name;
 	string last_name;
@@ -35,15 +36,20 @@ struct PatientNode {
 	struct PatientNode* right;
 };
 
+
+// бинарное дерево поиска, каждый элемент которого является объектом структуры PatientNode
 class PatientTree {
 public:
-	struct PatientNode* root;
-	void deletePatientList(PatientNode* root) {
-		if (root->left) deletePatientList(root->left);
-		if (root->right) deletePatientList(root->right);
+	struct PatientNode* root;		// вершина дерева
+
+	// функция удаления дерева пациентов
+	void deletePatientTree(PatientNode* root) {
+		if (root->left) deletePatientTree(root->left);
+		if (root->right) deletePatientTree(root->right);
 		delete root;
 	}
 
+	// удаление одного из пациентов из дерева
 	PatientNode* DeletePatientNode(PatientNode* root, int key) {
 		if (root == NULL) return root;
 		if (root->number < key) {
@@ -70,6 +76,7 @@ public:
 		root = NULL;
 	}
 
+	// вставка пациента в дерево
 	void insert(string first_name, string last_name, string patronymic, struct DateOfBirth date_of_birth, string phone_number, string policy_number, string blood_type) {
 		root = doInsert(first_name, last_name, patronymic, date_of_birth, phone_number, policy_number, blood_type, root);
 	}
@@ -121,8 +128,11 @@ private:
 		return tree;
 	}
 public:
+	
+	// функция симметричной печати дерева
 	void inorderPrint(struct PatientNode* root);
 
+	// функция нахождения минимального узла
 	PatientNode* FindMinNode(PatientNode* root) {
 		PatientNode* minNode = new PatientNode;
 		while (root->left) {
@@ -131,6 +141,7 @@ public:
 		return root;
 	}
 };
+
 
 void PatientTree::inorderPrint(struct PatientNode* root) {
 	if (!root) {
@@ -144,6 +155,7 @@ void PatientTree::inorderPrint(struct PatientNode* root) {
 	inorderPrint(root->right);
 }
 
+// функция для нумерации узлов дерева в порядке возрастания
 PatientNode* inorderNumber(struct PatientNode* root, int& number) {
 	PatientNode* new_root = root;
 	if (new_root) {
@@ -154,8 +166,10 @@ PatientNode* inorderNumber(struct PatientNode* root, int& number) {
 	return new_root;
 }
 
-void SearchInTree(PatientNode* root,string last_name, string first_name, string patronymic, string filename) {
-	if (!root) return;
+// функция поиска в дереве
+bool SearchInTree(PatientNode* root,string last_name, string first_name, string patronymic, string filename) {
+	bool flag = false;
+	if (!root) return flag;
 	SearchInTree(root->left, last_name, first_name, patronymic, filename);
 	if (root->last_name == last_name && root->first_name == first_name && root->patronymic == patronymic) {
 		ofstream fout(filename, std::ios::app);
@@ -164,17 +178,20 @@ void SearchInTree(PatientNode* root,string last_name, string first_name, string 
 			<< root->date_of_birth.year << "\t+" << root->phone_number
 			<< "\t" << root->policy_number << "\t" << root->blood_type;
 		fout.close();
+		flag = true;
+		return flag;
 	}
 	SearchInTree(root->right, last_name, first_name, patronymic, filename);
 }
 
-// List of adresses
+// структура адреса больницы
 struct Adress{
 	string adress;
 	class PatientTree* PatientTree = NULL;
 	struct Adress* next_adress{};
 };
 
+// односвязный список адресов больниц
 class AdressList {
 public:
 	struct Adress* firstAdress_;
@@ -183,16 +200,28 @@ public:
 		firstAdress_ = NULL;
 		lastAdress_ = NULL;
 	}
+
+	// добавление адреса в конец списка
 	void AddAdress(string adress);
+
+	// удаление адреса под номером index
 	void DelAdress(int index);
+
+	// удаление всех адресов из списка
 	void DelAllAdresses();
+
+	// печать списка адресов
 	void PrintAdressList();
+
+	// найти длину списка
 	int knowLength();
+
+	// найти пациента в списке
 	void SearchPatient();
 };
 
 int AdressList::knowLength() {
-	int counter = 0;
+	int counter = 0;	// счетчик длины
 	Adress* a = new Adress;
 	a = firstAdress_;
 	do {
@@ -222,16 +251,16 @@ void AdressList::DelAdress(int index) {
 	int length = knowLength();
 	if (index > length || index < 1) return;
 
-	if (firstAdress_ == NULL) return;	// hollow list
-	else if (firstAdress_ == lastAdress_ && index == 1) {	// one element list
+	if (firstAdress_ == NULL) return;	// пустой список
+	else if (firstAdress_ == lastAdress_ && index == 1) {	// список из 1 элемента
 		firstAdress_ = NULL;
 		lastAdress_ = NULL;
 	}
-	else if (index == 1) {			// delete first element
+	else if (index == 1) {			// удаление первого элемента
 		firstAdress_ = now->next_adress;
 		lastAdress_->next_adress = firstAdress_;
 	}
-	else if (index == length) {	// delete last element
+	else if (index == length) {	// удаления второго элемента
 		if (firstAdress_ == lastAdress_) {
 			delete firstAdress_;
 			return;
@@ -243,7 +272,7 @@ void AdressList::DelAdress(int index) {
 		delete lastAdress_;
 		lastAdress_ = now;
 	}
-	else {							// delete any other element
+	else {							// остальные случаи
 		for (int i = 2; i < index; i++) {
 			now = now->next_adress;
 		}
@@ -276,50 +305,64 @@ void AdressList::SearchPatient() {
 	string first_name, last_name, patronymic;
 	Adress* current = new Adress;
 	cout << "\nEnter first name: ";
-	cin >> first_name;
+	cin >> first_name;		// имя пациента
 	cout << "\nEnter last name: ";
-	cin >> last_name;
+	cin >> last_name;		// фамилия пациента
 	cout << "\nEnter patronymic: ";
-	cin >> patronymic;
+	cin >> patronymic;		// отчество пациента
 	cout << "\nWrite the name of the file in which to write the data:\n> ";
-	string filename;
+	string filename;		// файл для вывода результата
 	ofstream fout;
 	cin >> filename;
 	fout.open(filename, std::ios::app);
-	while (!fout.is_open()) {
+
+	while (!fout.is_open()) {		// файл открыт?
 		cout << "\nError: file does not exist! Try another time:\n> ";
 		cin >> filename;
 		fout.close();
 		fout.open(filename, std::ios::app);
 	}
+
+	bool flag;
+	// печать в файл данных о искомом пациенте
 	fout << "\nPatient to search: " << last_name << " " << first_name << " " << patronymic;
 	fout.close();
 	current = firstAdress_;
-	fout.open("input.txt", std::ios::out | std::ios::in);
+
+	// очистка файла
+	fout.open("input.txt", std::ios::out | std::ios::in);	
 	fout.close();
-	do {
+
+	do {		// обход списка с поиском в нем нужного пациента
 		fout.open(filename, std::ios::app);
 		fout << "\n\n\t\tAdress: " << current->adress;
 		fout.close();
 		if (current->PatientTree) {
-			SearchInTree(current->PatientTree->root, last_name, first_name, patronymic, filename);
+			//поиск пациента в дереве
+			flag = SearchInTree(current->PatientTree->root, last_name, first_name, patronymic, filename);
+			if (!flag) {
+				fout.open(filename, std::ios::app);
+				fout << "\n\tThere are no matching patients at this address!\n";
+				fout.close();
+			}
 		}
 		current = current->next_adress;
 	} while (current != firstAdress_);
 }
 
+// реализация меню
 void menuReaization() {
 	setlocale(LC_ALL, "rus");
-	AdressList* adress_list = new AdressList;
+	AdressList* adress_list = new AdressList;	// инициализвация списка адресов
 	int variant;
 	int variant2;
-	string adress;
-	string first_name;
-	string last_name;
-	string patronymic;
-	struct DateOfBirth date_of_birth {};
-	string phone_number{};
-	string policy_number{};
+	string adress;			// адрес ольницы
+	string first_name;		// имя пациента
+	string last_name;		// фамилия пациента
+	string patronymic;		// отчество пациента
+	struct DateOfBirth date_of_birth {};	// дата рождения пациента
+	string phone_number{};		// номер телефона пациента
+	string policy_number{};		// номер полиса поциента
 	string blood_type;
 	ifstream fin;
 	string filename;
@@ -473,7 +516,7 @@ void menuReaization() {
 							patient_tree->root = patient_tree->DeletePatientNode(patient_tree->root, index);
 							break;
 						case 4:
-							patient_tree->deletePatientList(patient_tree->root);
+							patient_tree->deletePatientTree(patient_tree->root);
 							patient_tree->root = NULL;
 							break;
 						case 5:

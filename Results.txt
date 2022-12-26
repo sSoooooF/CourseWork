@@ -1,29 +1,19 @@
-
-
-		Adress: Druzhby Narodiv street 67
 Patient to search: Vanov Ivan Ivanovich
 
 		Adress: Dubosekivska street 13
+	There are no matching patients at this address!
+
+
+		Adress: 20A Kol Gali boulevard
 	Vanov		Ivan		Ivanovich	11.11.2011	+79172695051	4567147825883699	a+
 
-		Adress: 20A Kol Gali boulevard
-
 		Adress: avenue Yashlek house 18
+	There are no matching patients at this address!
+
 
 		Adress: Prospekt Mira house 29
+	There are no matching patients at this address!
+
 
 		Adress: Druzhby Narodiv street 67
-
-
-Patient to search: Ivanov Ivan Ivanovich
-
-		Adress: Dubosekivska street 13
-	Ivanov		Ivan		Ivanovich	11.11.2011	+79172695051	4567147825883699	ab+
-
-		Adress: 20A Kol Gali boulevard
-
-		Adress: avenue Yashlek house 18
-
-		Adress: Prospekt Mira house 29
-
-		Adress: Druzhby Narodiv street 67
+	Vanov		Ivan		Ivanovich	11.11.2011	+79172695051	4567147825883699	a+
